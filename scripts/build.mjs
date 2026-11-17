@@ -13,9 +13,19 @@
 import { spawnSync } from "node:child_process";
 import { cpSync, existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
 
-function run(cmd, args, env) {
-  const result = spawnSync(cmd, args, { stdio: "inherit", env: { ...process.env, ...env } });
+/**
+ * Runs a Node script with the current Node binary. Spawning "pnpm" or "next"
+ * directly fails on Windows (they are .cmd shims, which Node will not start
+ * without a shell), so every step runs through `process.execPath` instead.
+ */
+function run(script, args, env) {
+  const result = spawnSync(process.execPath, [script, ...args], { stdio: "inherit", env: { ...process.env, ...env } });
+  if (result.error) {
+    console.error(`build: could not start ${script}: ${result.error.message}`);
+    process.exit(1);
+  }
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
@@ -24,15 +34,15 @@ const env = {
     process.env.ALOLE_BUILD_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? randomUUID(),
   NEXT_PUBLIC_BUILD_YEAR: process.env.NEXT_PUBLIC_BUILD_YEAR ?? String(new Date().getUTCFullYear()),
 };
-const next = ["exec", "next", "build"];
+const nextBin = createRequire(import.meta.url).resolve("next/dist/bin/next");
 
-run("node", ["scripts/csp-manifest.mjs", "init"], env);
+run("scripts/csp-manifest.mjs", ["init"], env);
 console.log("\n— build pass 1 of 2: prerender pages —");
-run("pnpm", next, env);
-run("node", ["scripts/csp-manifest.mjs", "write"], env);
+run(nextBin, ["build"], env);
+run("scripts/csp-manifest.mjs", ["write"], env);
 console.log("\n— build pass 2 of 2: bundle CSP manifest —");
-run("pnpm", next, env);
-run("node", ["scripts/csp-manifest.mjs", "verify"], env);
+run(nextBin, ["build"], env);
+run("scripts/csp-manifest.mjs", ["verify"], env);
 
 // The standalone server (Docker, e2e tests) serves static files from beside itself.
 if (existsSync(".next/standalone")) {
