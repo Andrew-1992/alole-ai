@@ -1,0 +1,15 @@
+.git
+.github
+.next
+node_modules
+test-results
+playwright-report
+blob-report
+.lighthouseci
+coverage
+*.log
+.env*
+!.env.example
+Dockerfile
+.dockerignore
+lib/security/csp-manifest.generated.json

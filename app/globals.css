@@ -1,0 +1,431 @@
+@import "tailwindcss";
+
+/*
+ * Alole design tokens.
+ * Raw values live on :root as CSS variables and switch per theme.
+ * Tailwind reads them through @theme inline, so utilities like
+ * `bg-paper` or `text-muted` always follow the active theme.
+ *
+ * Theme resolution:
+ *   1. No preference stored  -> follows prefers-color-scheme (works without JS).
+ *   2. Preference stored     -> the theme script sets data-theme before first paint.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Neutrals (warm), after Oberon */
+  --paper: #f2f0ee;
+  --surface: #ffffff;
+  --surface-sunken: #e8e5e1;
+  --line: #d9d5d1;
+  --line-strong: #c0bab6;
+  --muted: #5c5b5b;
+  --ink-soft: #3d3b3b;
+  --ink: #171717;
+  --on-ink: #f2f0ee;
+
+  /* Brand accent: Oberon signal orange.
+     --accent is for fills, markers and focus rings (3:1 against paper and white);
+     --accent-ink is the text-safe tone (at least 4.5:1). */
+  --accent: #ed4f00;
+  --accent-ink: #b83d00;
+  --on-accent: #171717;
+
+  /* Footer: dark in both themes. */
+  --footer: #171717;
+  --footer-ink: #f2f0ee;
+  --footer-muted: #a8a6a4;
+  --footer-line: #333131;
+
+
+  /* Feedback */
+  --danger: #a3261b;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(20 20 19 / 0.06);
+  --shadow-md: 0 8px 24px -8px rgb(20 20 19 / 0.14), 0 2px 4px rgb(20 20 19 / 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #171717;
+    --surface: #202020;
+    --surface-sunken: #2a2928;
+    --line: #333131;
+    --line-strong: #4a4747;
+    --muted: #a8a6a4;
+    --ink-soft: #d2ceca;
+    --ink: #f2f0ee;
+    --on-ink: #171717;
+    --accent: #ff6a1a;
+    --accent-ink: #f07a3c;
+    --on-accent: #171717;
+    --footer: #0f0f0f;
+    --footer-line: #2a2928;
+    --danger: #ff8f84;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #171717;
+  --surface: #202020;
+  --surface-sunken: #2a2928;
+  --line: #333131;
+  --line-strong: #4a4747;
+  --muted: #a8a6a4;
+  --ink-soft: #d2ceca;
+  --ink: #f2f0ee;
+  --on-ink: #171717;
+  --accent: #ff6a1a;
+  --accent-ink: #f07a3c;
+  --on-accent: #171717;
+  --footer: #0f0f0f;
+  --footer-line: #2a2928;
+  --danger: #ff8f84;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+}
+
+/* `dark:` matches the system preference (when no explicit choice is stored)
+   and an explicit data-theme="dark". */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+  &:where(:root[data-theme="dark"] *) {
+    @slot;
+  }
+}
+
+@theme inline {
+  /* Color */
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-muted: var(--muted);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+  --color-footer: var(--footer);
+  --color-footer-ink: var(--footer-ink);
+  --color-footer-muted: var(--footer-muted);
+  --color-footer-line: var(--footer-line);
+  --color-danger: var(--danger);
+
+  /* Type */
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  /* Code only. Everything else is one sans family. */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Shadow */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+}
+
+@theme {
+  /* Code surfaces stay dark in both themes. */
+  --color-code: #171717;
+  --color-code-fg: #f2f0ee;
+
+  /* Type scale (mobile first; display sizes grow with the viewport) */
+  /* Type scale after openai.com: one sans family, medium-weight headlines,
+     tight tracking on large sizes, calm 17px body with tall line height. */
+  --text-display: clamp(2.75rem, 1.55rem + 4.6vw, 4.75rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.25rem, 1.6rem + 2.5vw, 3.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.027em;
+  --text-h2: clamp(1.75rem, 1.4rem + 1.3vw, 2.5rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.022em;
+  --text-h3: 1.3125rem;
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.01em;
+  --text-lead: clamp(1.125rem, 1rem + 0.45vw, 1.3125rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.01em;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+
+  /* Layout */
+  --container-page: 80rem;
+  --container-prose: 40rem;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Native disclosure markers are replaced with our own icons. */
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Headlines: the same sans as the body, medium weight (after openai.com). */
+  .font-display {
+    font-family: var(--font-sans);
+    font-weight: 500;
+  }
+
+  /* Small label above a heading: sentence case, medium weight, muted. */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+
+  /* Elements that only make sense once JavaScript runs.
+     The theme script adds .js to <html> before first paint. */
+  html:not(.js) .js-only {
+    display: none !important;
+  }
+  html.js .no-js-only {
+    display: none !important;
+  }
+}
+
+/* Reveal on scroll, CSS only. Uses scroll-driven animations where the
+   browser supports them; elsewhere content simply shows. No JavaScript is
+   involved, so content never waits for scripts on a slow connection. */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal],
+    [data-reveal-group] > * {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    /* Items in a group arrive one after another as the group scrolls in. */
+    [data-reveal-group] > :nth-child(2) {
+      animation-range: entry 8% entry 48%;
+    }
+    [data-reveal-group] > :nth-child(3) {
+      animation-range: entry 16% entry 56%;
+    }
+    [data-reveal-group] > :nth-child(n + 4) {
+      animation-range: entry 24% entry 64%;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion. CSS only, so nothing waits for JavaScript; everything below  */
+/* is switched off for prefers-reduced-motion.                          */
+/* ------------------------------------------------------------------ */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes diagram-flow {
+  50% {
+    translate: 4px 0;
+  }
+}
+@media (max-width: 1023.98px) {
+  @keyframes diagram-flow {
+    50% {
+      translate: 0 4px;
+    }
+  }
+}
+@keyframes grid-drift {
+  to {
+    background-position: 24px 24px;
+  }
+}
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Page-load entrance for the hero: lines arrive in sequence. The h1 is
+     left still so it paints immediately (it is the largest element). */
+  [data-rise] {
+    animation: rise-in 700ms var(--ease-out-soft) both;
+    animation-delay: calc(var(--rise-step, 0) * 90ms + 80ms);
+  }
+
+  /* Header dropdowns and the mobile sheet open with a short fade and drop. */
+  details[open] > [data-menu-panel] {
+    animation: menu-in 180ms var(--ease-out-soft);
+  }
+  /* FAQ answers fade in as they open. */
+  details[open] > [data-disclosure-body] {
+    animation: fade-in 240ms var(--ease-out-soft);
+  }
+
+  /* Diagram connectors: the arrow pushes forward while work flows. */
+  .diagram-flow {
+    animation: diagram-flow 900ms var(--ease-out-soft) infinite;
+  }
+
+  /* Each quiz step slides in as it replaces the last. */
+  .picker-step {
+    animation: rise-in 320ms var(--ease-out-soft);
+  }
+
+  /* The hero's dot grid drifts very slowly. */
+  [data-drift] {
+    animation: grid-drift 6s linear infinite;
+  }
+
+  /* Cards lift towards the pointer. */
+  /* Uses `translate`, not `transform`, so it combines with the reveal animation. */
+  .lift {
+    transition:
+      translate 220ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft),
+      background-color 150ms;
+  }
+  .lift:hover {
+    translate: 0 -4px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Buttons press in, and a trailing arrow nudges forward on hover. */
+  .btn {
+    transition:
+      color 150ms,
+      background-color 150ms,
+      border-color 150ms,
+      scale 120ms var(--ease-out-soft);
+  }
+  .btn:active {
+    scale: 0.97;
+  }
+  .btn > svg:last-child,
+  .nudge > svg:last-child {
+    transition: transform 200ms var(--ease-out-soft);
+  }
+  .btn:hover > svg:last-child,
+  .nudge:hover > svg:last-child,
+  .group:hover .nudge-icon {
+    transform: translateX(3px);
+  }
+  [dir="rtl"] .btn:hover > svg:last-child,
+  [dir="rtl"] .nudge:hover > svg:last-child,
+  [dir="rtl"] .group:hover .nudge-icon {
+    transform: translateX(-3px);
+  }
+}
+
+/* Reading progress: a thin accent line under the header that fills as the
+   page scrolls. Hidden where scroll-driven animations are not supported. */
+.scroll-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      transform-origin: 0 50%;
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+    [dir="rtl"] .scroll-progress {
+      transform-origin: 100% 50%;
+    }
+  }
+}
+
+/* Enquiry form: client-project fields show only for that topic once JS runs;
+   without JS every field shows (marked optional). */
+html.js [data-project-fields]:not([data-active]) {
+  display: none;
+}

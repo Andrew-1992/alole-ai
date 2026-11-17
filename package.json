@@ -1,0 +1,44 @@
+{
+  "name": "excepai-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/build.mjs",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "node scripts/csp-manifest.mjs init && next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "build:next": "next build",
+    "postinstall": "node scripts/csp-manifest.mjs init",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run",
+    "copy:todo": "node scripts/todo-copy.mjs"
+  },
+  "dependencies": {
+    "ioredis": "5.8.2",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "resend": "6.38.0",
+    "server-only": "^0.0.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "^5.1.0"
+  },
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.12.0 <25"
+  }
+}
