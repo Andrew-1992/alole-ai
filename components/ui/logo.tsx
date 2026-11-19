@@ -49,30 +49,66 @@ export function logoShapes(text: string, accent: string) {
   );
 }
 
+/**
+ * Mark only, framed exactly as it is inside the full lockup (same scale, same
+ * position), so the symbol looks identical to before.
+ */
+const MARK_ONLY_VIEW_BOX = "-1070 -80 910 880";
+const MARK_ONLY_RATIO = 910 / 880;
+
+/** Size of the symbol relative to `height`. The name's size is not affected. */
+const MARK_SCALE = 1.35;
+
+/**
+ * The name is live text in the site's display font, so it follows the same
+ * family, weight and tracking as the headlines. Tune these three to match them.
+ */
+const NAME_TEXT = "Alole AI";
+const NAME_WEIGHT = 600;
+const NAME_TRACKING = "-0.02em";
+/** The name's cap height is 720 of the lockup's 880 units; display fonts run about 0.7em cap height. */
+const NAME_FONT_SCALE = 720 / 880 / 0.7;
+
 interface LogoProps {
-  /** Rendered height in CSS pixels. Width follows the artwork's ratio. */
+  /** Rendered height in CSS pixels. The name scales with it. */
   height?: number;
   className?: string;
   /** Accessible name. Omit when a surrounding link already provides one. */
   title?: string;
 }
 
-/** The full logo: mark and name. */
+/** The full logo: mark and name. The name is text, so it uses the site's own font. */
 export function Logo({ height = 22, className, title }: LogoProps) {
   const labelled = title !== undefined;
   return (
-    <svg
-      viewBox={LOGO_VIEW_BOX}
-      height={height}
-      width={Math.round(height * LOGO_RATIO)}
+    <span
       className={className}
       role={labelled ? "img" : undefined}
       aria-label={labelled ? title : undefined}
       aria-hidden={labelled ? undefined : true}
-      focusable="false"
     >
-      <g transform={LOCKUP_MARK}>{markShapes("var(--accent)")}</g>
-      <path fill="currentColor" d={NAME_PATH} />
-    </svg>
+      <span className="flex items-center" style={{ gap: Math.round((height * 160) / 880) }}>
+        <svg
+          viewBox={MARK_ONLY_VIEW_BOX}
+          height={Math.round(height * MARK_SCALE)}
+          width={Math.round(height * MARK_SCALE * MARK_ONLY_RATIO)}
+          className="shrink-0"
+          focusable="false"
+          aria-hidden="true"
+        >
+          <g transform={LOCKUP_MARK}>{markShapes("var(--accent)")}</g>
+        </svg>
+        <span
+          className="font-display leading-none whitespace-nowrap"
+          style={{
+            fontSize: height * NAME_FONT_SCALE,
+            fontWeight: NAME_WEIGHT,
+            letterSpacing: NAME_TRACKING,
+          }}
+        >
+          {NAME_TEXT}
+        </span>
+      </span>
+    </span>
   );
 }

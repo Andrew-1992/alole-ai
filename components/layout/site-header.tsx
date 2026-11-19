@@ -23,8 +23,8 @@ export function SiteHeader() {
     <HeaderBehaviour className="group/header sticky top-0 z-40 border-b border-transparent bg-paper/80 backdrop-blur-lg transition-colors data-[compact]:border-line supports-[not(backdrop-filter:blur(1px))]:bg-paper">
       <Container className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:h-[4.5rem] lg:gap-8">
         <Link href="/" aria-label={ui.homeLinkLabel} className="flex items-center rounded-md text-ink">
-          <Logo height={34} className="hidden sm:block" />
-          <Logo height={30} className="sm:hidden" />
+          <Logo height={20} className="hidden sm:block" />
+          <Logo height={18} className="sm:hidden" />
         </Link>
 
         {/* Desktop navigation, centred */}

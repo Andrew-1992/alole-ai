@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { ArrowIcon } from "@/components/ui/icons";
-import { Logo, NAME_PATH, NAME_VIEW_BOX } from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
 import { company, navigation, site, solutions, ui } from "@/content";
 import { BUILD_YEAR } from "@/lib/build-info";
 import { companyLocationLine, telHref, whatsappHref } from "@/lib/company";
@@ -40,7 +40,7 @@ export function SiteFooter() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <div className="flex flex-col gap-6">
             <Link href="/" aria-label={ui.homeLinkLabel} className="w-fit rounded-md">
-              <Logo height={42} />
+              <Logo height={24} />
             </Link>
             <p className="font-display max-w-sm text-h3 text-footer-ink">{site.tagline}</p>
             <p className="max-w-sm text-small text-footer-muted">{site.description}</p>
@@ -118,13 +118,13 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      {/* The name, set large as a closing signature. Decorative. */}
+      {/* The name, set large as a closing signature. Decorative. Live text in the display font. */}
       <Container className="pointer-events-none select-none" aria-hidden="true">
         {/* Shows the top 55% of the letters; the rest runs off the bottom edge. */}
-        <div className="aspect-[2110/440] overflow-hidden">
-          <svg viewBox={NAME_VIEW_BOX} className="block h-auto w-full text-footer-line" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d={NAME_PATH} />
-          </svg>
+        <div className="overflow-hidden" style={{ fontSize: "clamp(4rem, 17vw, 14rem)", height: "0.55em" }}>
+          <span className="font-display block whitespace-nowrap font-semibold leading-none tracking-[-0.03em] text-footer-line">
+            Alole AI
+          </span>
         </div>
       </Container>
     </footer>
